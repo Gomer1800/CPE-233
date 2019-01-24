@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Luis Gomez
 // 
 // Create Date: 01/17/2019 09:42:19 AM
 // Design Name: 
@@ -9,9 +9,9 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description: Interfaces my PC_MUX, and program_counter modules
 // 
-// Dependencies: 
+// Dependencies: PC_MUX & program_counter
 // 
 // Revision:
 // Revision 0.01 - File Created

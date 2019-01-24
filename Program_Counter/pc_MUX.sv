@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Luis Gomez
 // 
 // Create Date: 01/17/2019 09:28:16 AM
 // Design Name: 
@@ -9,7 +9,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description: 4:1 MUX, 2-bit selector input, and four 10-bit inputs: FROM_IMMED, FROM_STACK, 0x3FF, 0x000
 // 
 // Dependencies: 
 // 

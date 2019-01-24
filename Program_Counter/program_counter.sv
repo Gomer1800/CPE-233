@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
+// Engineer: Luis Gomez
 // 
 // Create Date: 01/17/2019 08:28:33 AM
 // Design Name: 
@@ -9,9 +9,9 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 
+// Description: 10-bit counter, with LOAD, RESET, INCREMENT toggles. Has 10-bit DIN input & 10-bit output. DIN input is from the PC_MUX
 // 
-// Dependencies: 
+// Dependencies: none, technically this can be used as a generic 10-bit counter
 // 
 // Revision:
 // Revision 0.01 - File Created
