@@ -17,12 +17,12 @@ C5:  Raw line from source code.
 (0001)                            || ; Luis Gomez
 (0002)                            || ; CPE 2333
 (0003)                            || ;
-(0004)                            || ; Program which reads in a value, and generates a delay of .5 seconds, the outputs value
+(0004)                            || ; Program which reads in a value, and generates a delay of .5 seconds, then outputs value
 (0005)                            || ;
-(0006)                            || ; Give that each instruction ~ 40 ns, RAT MCU ~ 25MHZ. To create a delay of .5 seconds I will use
+(0006)                            || ; Given that each instruction ~ 40 ns, RAT MCU ~ 25MHZ. To create a delay of .5 seconds I will use
 (0007)                            || ; (n) nested loops consisting of decrement counters of size 0xFF
 (0008)                            || ;	
-(0009)                            || ;	(255^n) * 40ns = .5 secs
+(0009)                            || ;	(255^n) * 40ns = 1/2 secs
 (0010)                            || ;	n = ln(1/80ns)/ln(255) ~ 3 nested loops
 (0011)                            || ;
 (0012)                            || ; Registers Used:
@@ -33,15 +33,15 @@ C5:  Raw line from source code.
 (0017)                            || 
 (0018)                       154  || .EQU IN_PORT = 0x9A
 (0019)                       066  || .EQU OUT_PORT = 0x42
-(0020)                       005  || .EQU COUNT = 0x05
+(0020)                       001  || .EQU COUNT = 0x01
 (0021)                            || 
 (0022)                            || .CSEG
 (0023)                       001  || .ORG 0x01
 (0024)                            || 
 (0025)  CS-0x001  0x3209A  0x001  || 	start:	IN R0, IN_PORT	; read input
-(0026)  CS-0x002  0x36105         || 			MOV R1, COUNT
-(0027)  CS-0x003  0x36205  0x003  || 	loop1:	MOV R2, COUNT
-(0028)  CS-0x004  0x36305  0x004  || 	loop2:	MOV R3, COUNT
+(0026)  CS-0x002  0x36101         || 			MOV R1, COUNT
+(0027)  CS-0x003  0x36201  0x003  || 	loop1:	MOV R2, COUNT
+(0028)  CS-0x004  0x36301  0x004  || 	loop2:	MOV R3, COUNT
 (0029)  CS-0x005  0x2C301  0x005  || 	loop3:	SUB R3, 1		; count3--
 (0030)  CS-0x006  0x0802B         || 			BRNE loop3
 (0031)  CS-0x007  0x2C201         || 			SUB R2, 1		; count2--
@@ -82,7 +82,7 @@ START          0x001   (0025)  ||
 
 -- Directives: .EQU
 ------------------------------------------------------------ 
-COUNT          0x005   (0020)  ||  0026 0027 0028 
+COUNT          0x001   (0020)  ||  0026 0027 0028 
 IN_PORT        0x09A   (0018)  ||  0025 
 OUT_PORT       0x042   (0019)  ||  0035 
 
