@@ -1,5 +1,6 @@
 .EQU IN_PORT = 0x30
 .EQU OUT_PORT = 0x42
+.CSEG
 .ORG 0x01
 
 start:	IN R1, IN_PORT
@@ -10,3 +11,4 @@ start:	IN R1, IN_PORT
 		BRN output
 less:	LSL R1				; multiply R1 by 2
 output:	OUT R1, OUT_PORT
+
