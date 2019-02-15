@@ -1,0 +1,4 @@
+.CSEG
+.ORG
+
+	main:	
