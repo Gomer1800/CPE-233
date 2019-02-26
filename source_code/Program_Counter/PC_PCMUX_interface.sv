@@ -1,39 +1,36 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
 // Engineer: Luis Gomez
-// 
-// Create Date: 01/17/2019 09:42:19 AM
-// Design Name: 
 // Module Name: PC_PCMUX_interface
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: Interfaces my PC_MUX, and program_counter modules
 // 
-// Dependencies: PC_MUX & program_counter
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+// Dependencies: 
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
 module PC_PCMUX_interface(
-    // clock signal
-    input CLK,
-    // PC_MUX interface
-    input [9:0] FROM_IMMED, FROM_STACK,
+    input CLK,  // clock signal
+    input RST, 
+    input PC_LD,
+    input PC_INC,
+    input [9:0] IR, 
+    input [9:0] SCR_DATA_OUT,
     input [1:0] PC_MUX_SEL,
-    // output logic [9:0] DIN
-    // Program Counter interface
-    input PC_LD, PC_INC, RST,
     output logic [9:0] PC_COUNT
-    // output logic [9:0] DIN // USED ONLY FOR TEST BENCH
     );
-    // logic [9:0] DIN;
+    logic [9:0] DIN;
     
-    pc_MUX PCMUX(FROM_IMMED, FROM_STACK, PC_MUX_SEL, DIN);
-    program_counter PC(DIN, PC_LD, PC_INC, RST, CLK, PC_COUNT);
-    
+    pc_MUX PCMUX(
+        IR,
+        SCR_DATA_OUT,
+        PC_MUX_SEL,
+        DIN);
+          
+    program_counter PC(
+        CLK,
+        DIN,
+        RST,
+        PC_LD,
+        PC_INC,
+        PC_COUNT);
+                
 endmodule

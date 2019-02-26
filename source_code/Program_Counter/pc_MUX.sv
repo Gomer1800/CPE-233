@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Luis Gomez
+// Engineer: 
 // 
 // Create Date: 01/17/2019 09:28:16 AM
 // Design Name: 
@@ -9,7 +9,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: 4:1 MUX, 2-bit selector input, and four 10-bit inputs: FROM_IMMED, FROM_STACK, 0x3FF, 0x000
+// Description: 
 // 
 // Dependencies: 
 // 
@@ -21,27 +21,24 @@
 
 
 module pc_MUX(
-    input [9:0] FROM_IMMED, FROM_STACK,
-    input [1:0] PC_MUX_SEL,
-    output logic [9:0] DIN = 0
+    input logic [9:0] IR, 
+    input logic [9:0] SCR_DATA_OUT,
+    input logic [1:0] PC_MUX_SEL,
+    output logic [9:0] DIN
     );
-    
-    parameter [9:0] SIZE = 10'h3FF;
-    
+        
     always_comb begin
         case (PC_MUX_SEL)
-            2'b00:  begin
-                    DIN <= FROM_IMMED;
+                0:  begin
+                    DIN <= IR;
                     end
-            2'b01:  begin
-                    DIN <= FROM_STACK;
+                1:  begin
+                    DIN <= SCR_DATA_OUT;
                     end
-            2'b10:  begin
+                2:  begin
                     DIN <= 10'h3FF;
                     end
-            2'b11:  begin
-                    DIN <= 0;
-                    end
+            // elminiated 2'b11, no case for this
         endcase
     end
 endmodule
