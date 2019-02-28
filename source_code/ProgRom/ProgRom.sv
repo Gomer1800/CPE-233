@@ -20,12 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module ProgRom(
-    input PROG_CLK,
-    // input [9:0] PROG_ADDR,
-    output logic [17:0] PROG_IR // system verilog uses Logic instead of wire or reg
+    input CLK,
+    input [9:0] ADDR,
+    output logic [17:0] IR // system verilog uses Logic instead of wire or reg
     );
     
-    reg [9:0] PROG_ADDR = 0;
+    //reg [9:0] ADDR = 0;
     (* rom_style="{distributed | block}" *) // force the ROM to be block memory
     logic [17:0] rom[0:1023];
     
@@ -34,10 +34,8 @@ module ProgRom(
         $readmemh("part2.mem", rom, 0, 1023); // (0 ,1023)
     end
     
-    always_ff @ (posedge PROG_CLK) // always ff
-    begin
-        PROG_ADDR += 1;
-        PROG_IR <= rom[PROG_ADDR];
+    always_ff @ (posedge CLK) begin
+        IR <= rom[ADDR];
     end
     
 endmodule

@@ -7,7 +7,7 @@ module control_unit(
     input CLK,
     input C,
     input Z, 
-    input INT, 
+    input INTERRUPT, // UNCONNECTED RIGHT NOW
     input RESET,
     input [4:0] OPCODE_HI_5,    // OPCODES
     input [1:0] OPCODE_LO_2,
@@ -78,7 +78,7 @@ module control_unit(
         RST = 0;
         IO_STRB = 0;
         case(PS)
-            ST_INIT: 
+            ST_INIT:
             begin
                 RST = 1;
                 NS = ST_FETCH;
@@ -124,27 +124,35 @@ module control_unit(
                     end
                 // BRCC
                     7'b0010101: begin
-                        if (C==0) PC_LD = 1;
-                        else PC_LD = 0;
+                        if (C==0) begin
+                            PC_LD = 1; end
+                        else begin
+                            PC_LD = 0; end
                     end
                 // BRCS
                     7'b0010100: begin
-                        if (C==1) PC_LD = 1;
-                        else PC_LD = 0;
+                        if (C==1) begin
+                            PC_LD = 1; end
+                        else begin
+                            PC_LD = 0; end
                     end
                 // BREQ
                     7'b0010010: begin
-                        if (Z==1) PC_LD = 1;
-                        else PC_LD = 0;
+                        if (Z==1) begin
+                            PC_LD = 1; end
+                        else begin
+                            PC_LD = 0; end
                     end
                 // BRN    
                     7'b0010000: begin
-                        PC_LD = 1; PC_MUX_SEL = 0;
+                        PC_LD = 1;
                     end
                 // BRNE
                     7'b0010011: begin
-                        if (Z==0) PC_LD = 1;
-                        else PC_LD = 0;        
+                        if (Z==0) begin
+                            PC_LD = 1; end
+                        else begin
+                            PC_LD = 0; end        
                     end
                 // CLC
                     7'b0110000: begin
@@ -243,10 +251,11 @@ module control_unit(
                         7'b1001110, 7'b1001111: begin
                             ALU_SEL = 8; ALU_OPY_SEL = 1; FLG_C_CLR = 1; FLG_Z_LD = 1;
                         end
-                    default: RST = 1;
+                    //default: RST = 1;
                 endcase // OP_CODE
             NS = ST_FETCH;
             end
+            // default: NS = ST_INIT;
         endcase // PS
     end
 endmodule

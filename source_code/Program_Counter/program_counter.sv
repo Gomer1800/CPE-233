@@ -1,22 +1,8 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: 
-// 
-// Create Date: 01/17/2019 08:28:33 AM
-// Design Name: 
+// Engineer: Luis Gomez
 // Module Name: program_counter
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
 //////////////////////////////////////////////////////////////////////////////////
 
 module program_counter(
@@ -31,7 +17,7 @@ module program_counter(
     always_ff @ (posedge CLK)
     begin
         if (RST == 1) begin // RESET
-           PC_COUNT <= 1;
+           PC_COUNT <= 0;
         end
         else if (PC_LD == 1) begin // LOAD
             PC_COUNT <= DIN;            
@@ -39,7 +25,7 @@ module program_counter(
         else if (PC_INC == 1) begin // INCREMENT
             case(PC_COUNT)
                 10'h3FF: begin
-                        PC_COUNT <= 1; // OVERFLOW
+                        PC_COUNT <= 0; // OVERFLOW
                         end
                default: begin
                         PC_COUNT <= PC_COUNT + 1;

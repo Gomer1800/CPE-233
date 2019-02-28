@@ -6,7 +6,7 @@
 
 module MCU(
     input CLK,
-    input INT,
+    input INTERRUPT,
     input RESET,
     input [7:0] IN_PORT,
     output logic [7:0] OUT_PORT, 
@@ -37,7 +37,7 @@ module MCU(
     // ALU
         // SEL
         // A
-    logic [7:0] ALU_B;        // B
+    logic [7:0] ALU_B;  // B
     logic ALU_C_OUT;    // C
     logic ALU_Z_OUT;    // Z
     logic [7:0] ALU_RESULT;
@@ -88,7 +88,7 @@ module MCU(
     always_comb
     begin
         case (SCR_DATA_SEL)
-            0: SCR_DATA_IN = {2'b00,DX_OUT};
+            0: SCR_DATA_IN = DX_OUT;
             1: SCR_DATA_IN = PC_COUNT;
         endcase
     end
@@ -115,15 +115,15 @@ module MCU(
         RST,
         PC_LD,
         PC_INC,
-        IR [12:3],
+        IR[12:3],
         SCR_DATA_OUT,
         PC_MUX_SEL,
         PC_COUNT);
-
+     
     ProgRom RAT_Prog_Rom(
         CLK,        // PROG CLK
         PC_COUNT,   // PROG ADDR
-        IR );       // PROG IR
+        IR);       // PROG IR
     
     Reg_File RAT_REG_FILE(
         CLK, 
@@ -140,7 +140,7 @@ module MCU(
         SCR_WE,
         SCR_ADDR,
         SCR_DATA_OUT);
-        
+   
     ALU RAT_ALU(
         C_FLAG,     // CIN
         ALU_SEL,    // SEL
@@ -149,12 +149,12 @@ module MCU(
         ALU_RESULT, // RESULT    
         ALU_C_OUT,  // C
         ALU_Z_OUT); // Z
-  
+        
     control_unit RAT_CU(
         CLK,
         C_FLAG,     // C
         Z_FLAG,     // Z
-        INT,
+        INTERRUPT,
         RESET,
         IR[17:13],  // OPCODE_HI_5
         IR[1:0],    // OPCODE_LO_2
@@ -193,5 +193,6 @@ module MCU(
         ALU_C_OUT,  // C
         ALU_Z_OUT,  // Z
         C_FLAG,
-        Z_FLAG);    
+        Z_FLAG);
+
 endmodule
