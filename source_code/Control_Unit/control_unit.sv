@@ -154,10 +154,18 @@ module control_unit(
                         else begin
                             PC_LD = 0; end        
                     end
+                // CALL
+                    7'b0010001: begin
+                        PC_LD = 1; SCR_DATA_SEL = 1; SCR_WE = 1; SCR_ADDR_SEL = 3; SP_DECR = 1;
+                    end
                 // CLC
                     7'b0110000: begin
                         FLG_C_CLR = 1;
                     end
+                // CLI
+                    7'b0110101: begin
+                        // FILL ME
+                    end 
                 // CMP Reg-Reg
                     7'b0001000: begin
                         ALU_SEL = 4; FLG_C_LD = 1; FLG_Z_LD = 1;
@@ -181,6 +189,15 @@ module control_unit(
                     7'b1100110, 7'b1100111: begin
                         RF_WR = 1; RF_WR_SEL = 3; 
                     end
+                // LD Reg-Reg
+                    7'b0001010: begin
+                        RF_WR = 1; RF_WR_SEL = 1;
+                    end
+                // LD Reg-Immed
+                    7'b1110000, 7'b1110001,
+                    7'b1110010, 7'b1110011: begin
+                        RF_WR = 1; RF_WR_SEL = 1; SCR_ADDR_SEL = 1;
+                    end                                        
                 // LSL
                     7'b0100000: begin
                         RF_WR = 1; ALU_SEL = 9; FLG_Z_LD = 1;
@@ -212,6 +229,26 @@ module control_unit(
                     7'b1101010, 7'b1101011: begin
                         IO_STRB = 1;
                     end
+                // POP
+                    7'b0100110: begin
+                        RF_WR = 1; RF_WR_SEL = 1; SCR_ADDR_SEL = 2; SP_INCR = 1;
+                    end
+                // PUSH
+                    7'b0100101: begin
+                        SCR_WE = 1; SCR_ADDR_SEL = 3; SP_DECR = 1;  
+                    end   
+                // RET
+                    7'b0110010: begin
+                        PC_LD = 1; PC_MUX_SEL = 1; SCR_ADDR_SEL = 2; SP_INCR = 1;
+                    end
+                // RETIE
+                    7'b0110111: begin
+                        // FILL ME
+                    end
+                // RETID
+                    7'b0110110: begin
+                        // FILL ME
+                    end
                 // ROL
                     7'b0100010: begin
                         RF_WR = 1; ALU_SEL = 11; FLG_Z_LD = 1;
@@ -224,6 +261,19 @@ module control_unit(
                     7'b0110001: begin
                         FLG_C_SET = 1;
                     end
+                // SEI
+                    7'b0110100: begin
+                        // FILL ME
+                    end
+                // ST Reg-Reg
+                    7'b0001011: begin
+                        SCR_WE = 1;
+                    end
+                // ST Reg-Immed
+                    7'b1110100, 7'b1110101,
+                    7'b1110110, 7'b1110111: begin
+                        SCR_WE = 1; SCR_ADDR_SEL = 1;
+                    end        
                 // SUB Reg-Reg
                     7'b0000110: begin
                         RF_WR = 1; ALU_SEL  = 2; FLG_C_LD = 1; FLG_Z_LD = 1;
@@ -247,15 +297,24 @@ module control_unit(
                         ALU_SEL = 8; FLG_C_CLR = 1; FLG_Z_LD = 1;
                     end
                 // TEST Reg-Immed
-                        7'b1001100, 7'b1001101,
-                        7'b1001110, 7'b1001111: begin
-                            ALU_SEL = 8; ALU_OPY_SEL = 1; FLG_C_CLR = 1; FLG_Z_LD = 1;
-                        end
-                    //default: RST = 1;
+                    7'b1001100, 7'b1001101,
+                    7'b1001110, 7'b1001111: begin
+                        ALU_SEL = 8; ALU_OPY_SEL = 1; FLG_C_CLR = 1; FLG_Z_LD = 1;
+                    end
+                // WSP
+                    7'b0101000: begin
+                        SP_LD = 1;
+                    end
+                // RSP
+                    7'b0101001: begin
+                        RF_WR_SEL = 2; RF_WR = 1;
+                    end
+                // DEFAULT
+                    default: RST = 1;
                 endcase // OP_CODE
             NS = ST_FETCH;
             end
-            // default: NS = ST_INIT;
+            default: NS = ST_INIT;
         endcase // PS
     end
 endmodule

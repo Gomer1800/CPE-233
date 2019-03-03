@@ -22,7 +22,7 @@ module Flags(
     output logic Z_FLAG
     );
     // SIMPLE FLAGS
-    
+    /*
     always_ff@(posedge CLK)
     begin
         if(FLG_Z_LD==1) begin
@@ -39,10 +39,11 @@ module Flags(
         else if (FLG_C_SET==1)
             C_FLAG <= 1;
         else C_FLAG <= C_FLAG;
-    end
-    /*
+    end*/
+    
     /////////////////////////////////////////////////
     // Z MUX
+    /////////////////////////////////////////////////
     logic Z_IN;
     logic Z_OUT;
     logic SHAD_Z_OUT;
@@ -65,6 +66,7 @@ module Flags(
     end
     /////////////////////////////////////////////////
     // C MUX
+    /////////////////////////////////////////////////
     logic C_IN;
     logic C_OUT;
     logic SHAD_C_OUT;
@@ -89,10 +91,7 @@ module Flags(
     always_ff @(posedge CLK) begin
         if (FLG_SHAD_LD==1)
             SHAD_C_OUT <= C_OUT;
-        else
-            SHAD_C_OUT <= SHAD_C_OUT;
     end
     
     assign Z_FLAG = Z_OUT, C_FLAG = C_OUT;
-    */
 endmodule
