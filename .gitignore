@@ -10,7 +10,6 @@ assignments/CPE-233 - Shortcut.lnk
 *.lnk
 *.asl
 *.dbg
-*.mem
 *.err
 *.vhd
 *.dbg
