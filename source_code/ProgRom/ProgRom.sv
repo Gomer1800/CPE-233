@@ -40,7 +40,12 @@ module ProgRom(
         // 6B
         // $readmemh("6B.mem", rom, 0, 1023); // (0 ,1023)
         // Test All
-        $readmemh("TestAll.mem", rom, 0, 1023); // (0 ,1023)                         
+        // $readmemh("TestAll.mem", rom, 0, 1023); // (0 ,1023)
+//Phase3 Test        
+        // 8A
+        $readmemh("Phase3_8A.mem", rom, 0, 1023); // (0 ,1023)
+        // 8 regular duration
+        // $readmemh("Phase3_interrupt.mem", rom, 0, 1023); // (0 ,1023)                        
     end
     
     always_ff @ (posedge CLK) begin

@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module MCU(
-    input CLK,
+    input CLK,  // 50hz clock
     input INTERRUPT,
     input RESET,
     input [7:0] IN_PORT,
@@ -12,7 +12,12 @@ module MCU(
     output logic [7:0] PORT_ID,
     output logic IO_STRB
     );
-    
+    /////////////////////
+    //  Interrupt Handler
+    ////////////////////
+    logic I;
+    logic I_OUT;
+    assign I = INTERRUPT & I_OUT;
     /////////////////////
     //  SP
     ////////////////////
@@ -158,6 +163,12 @@ module MCU(
     end
     
     /************************************************/
+        
+    Interrupt_Handler RAT_Interrupt(
+        CLK,
+        I_SET,
+        I_CLR,
+        I_OUT);
     
     program_counter RAT_PC(
         CLK,
@@ -201,7 +212,7 @@ module MCU(
         CLK,
         C_FLAG,     // C
         Z_FLAG,     // Z
-        INTERRUPT,
+        I,          // INT
         RESET,
         IR[17:13],  // OPCODE_HI_5
         IR[1:0],    // OPCODE_LO_2

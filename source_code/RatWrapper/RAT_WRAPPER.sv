@@ -15,9 +15,12 @@
 
 module RAT_WRAPPER(
     input CLK,
-    input BTNC,
+    input BTNC, // RESET
+    input BTNU, // INTERRUPT
     input [7:0] SWITCHES,
-    output [7:0] LEDS
+    output [7:0] LEDS,
+    output [6:0] SEG,
+    output [3:0] an
     // seven seg display annodes can be added here
     );
     
@@ -30,6 +33,7 @@ module RAT_WRAPPER(
     // OUTPUT PORT IDS ///////////////////////////////////////////////////////
     // In future labs you can add more port IDs
     localparam LEDS_ID      = 8'h40;
+    localparam SEG_ID       = 8'h81;
        
     // Signals for connecting RAT_MCU to RAT_wrapper /////////////////////////
     logic [7:0] s_output_port;
@@ -40,9 +44,10 @@ module RAT_WRAPPER(
     logic s_clk_50 = 1'b0;     // 50 MHz clock
     
     // Register definitions for output devices ///////////////////////////////
-    logic [7:0]   s_input_port;
-    logic [7:0]   r_leds = 8'h00;
-
+    logic [7:0]     s_input_port;
+    logic [7:0]     r_leds = 8'h00;
+    logic [3:0]     r_seg  = 4'h00;
+    
     // Declare RAT_CPU ///////////////////////////////////////////////////////
     MCU RAT_MCU(
         .CLK(s_clk_50),
@@ -52,7 +57,19 @@ module RAT_WRAPPER(
         .OUT_PORT(s_output_port),
         .PORT_ID(s_port_id),
         .IO_STRB(s_load));
-            
+    
+    // Declare Sev Seg Display
+    BinSseg RAT_SEV_SEG(
+        r_seg,
+        SEG,
+        an);
+        
+    // Declare Debouncer    
+    debounce_one_shot RAT_debounce(
+        s_clk_50,
+        BTNU,
+        s_interrupt);
+                       
     // Clock Divider to create 50 MHz Clock //////////////////////////////////
     always_ff @(posedge CLK) begin
         s_clk_50 <= ~s_clk_50;
@@ -77,14 +94,17 @@ module RAT_WRAPPER(
             if (s_port_id == LEDS_ID) begin
                 r_leds <= s_output_port;
             end
+            else if (s_port_id == SEG_ID) begin
+                r_seg <= s_output_port;
+            end            
         end
     end
      
     // Connect Signals ///////////////////////////////////////////////////////
     assign s_reset = BTNC;
-    assign s_interrupt = 1'b0;  // no interrupt used yet
+    // assign s_interrupt = BTNU;  // no interrupt used yet
      
     // Output Assignments ////////////////////////////////////////////////////
     assign LEDS = r_leds;
-   
+    
     endmodule

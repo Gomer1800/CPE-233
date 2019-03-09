@@ -6,8 +6,8 @@
 module control_unit(
     input CLK,
     input C,
-    input Z, 
-    input INTERRUPT, // UNCONNECTED RIGHT NOW
+    input Z,
+    input INTERRUPT,
     input RESET,
     input [4:0] OPCODE_HI_5,    // OPCODES
     input [1:0] OPCODE_LO_2,
@@ -39,7 +39,7 @@ module control_unit(
     logic [6:0] OP_CODE;
     assign OP_CODE = {OPCODE_HI_5, OPCODE_LO_2};
     
-    typedef enum {ST_INIT,ST_FETCH,ST_EXEC} STATE;
+    typedef enum {ST_INIT,ST_FETCH,ST_EXEC,ST_INT} STATE;
     STATE NS = ST_FETCH;
     STATE PS = ST_INIT;
     
@@ -87,6 +87,19 @@ module control_unit(
             begin
                 PC_INC = 1;
                 NS = ST_EXEC;
+            end
+            ST_INT:
+            begin
+                I_CLR = 1;          // Mask interrupts
+                I_SET = 0;            
+                SCR_DATA_SEL = 1;   // Store current PC
+                SCR_WE = 1;
+                SCR_ADDR_SEL = 3;
+                SP_DECR = 1;                
+                FLG_SHAD_LD = 1;    // Save MCU context
+                PC_MUX_SEL = 2;     // load PC w/ 0x3FF
+                PC_LD = 1;
+                NS = ST_FETCH;
             end
             ST_EXEC:
             begin
@@ -164,7 +177,7 @@ module control_unit(
                     end
                 // CLI
                     7'b0110101: begin
-                        // FILL ME
+                        I_CLR = 1; I_SET = 0;
                     end 
                 // CMP Reg-Reg
                     7'b0001000: begin
@@ -236,18 +249,22 @@ module control_unit(
                 // PUSH
                     7'b0100101: begin
                         SCR_WE = 1; SCR_ADDR_SEL = 3; SP_DECR = 1;  
-                    end   
+                    end
                 // RET
                     7'b0110010: begin
                         PC_LD = 1; PC_MUX_SEL = 1; SCR_ADDR_SEL = 2; SP_INCR = 1;
                     end
                 // RETIE
                     7'b0110111: begin
-                        // FILL ME
+                        // RF_WR = 1; RF_WR_SEL = 1;
+                        SCR_ADDR_SEL = 2; SP_INCR = 1; PC_MUX_SEL = 1; PC_LD = 1;
+                        FLG_LD_SEL = 1; I_CLR = 0; I_SET = 1;  FLG_Z_LD = 1; FLG_C_LD = 1;
                     end
                 // RETID
                     7'b0110110: begin
-                        // FILL ME
+                        // RF_WR = 1; RF_WR_SEL = 1; 
+                        SCR_ADDR_SEL = 2; SP_INCR = 1; PC_MUX_SEL = 1; PC_LD = 1;
+                        FLG_LD_SEL = 1; I_CLR = 1; I_SET = 0; FLG_Z_LD = 1; FLG_C_LD = 1;
                     end
                 // ROL
                     7'b0100010: begin
@@ -263,7 +280,7 @@ module control_unit(
                     end
                 // SEI
                     7'b0110100: begin
-                        // FILL ME
+                        I_CLR = 0; I_SET = 1;
                     end
                 // ST Reg-Reg
                     7'b0001011: begin
@@ -312,7 +329,10 @@ module control_unit(
                 // DEFAULT
                     default: RST = 1;
                 endcase // OP_CODE
-            NS = ST_FETCH;
+                if(INTERRUPT)
+                    NS = ST_INT;
+                else
+                    NS = ST_FETCH;
             end
             default: NS = ST_INIT;
         endcase // PS
