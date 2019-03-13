@@ -26,14 +26,11 @@
 ;r8 is used for X
 
 ;---------------------------------------------------------------------
-init:   CALL   draw_background         ; draw using default color
-
-
-      
-
-main:	AND R0, R0
-	
-		BRN    main                    ; continuous loop 
+init:
+		CALL	draw_background         ; draw using default color
+main:	SEI
+		AND		R0, R0
+		BRN		main                    ; continuous loop 
 ;--------------------------------------------------------------------
 
 
@@ -101,7 +98,7 @@ draw_background:
 start:   MOV   r7,r10                   ; load current row count 
          MOV   r8,0x00                  ; restart x coordinates
          MOV   r9,0x4F 					; set to total number of columns
- 
+
          CALL  draw_horizontal_line
          ADD   r10,0x01                 ; increment row count
          CMP   r10,0x3C                 ; see if more rows to draw
@@ -117,7 +114,7 @@ start:   MOV   r7,r10                   ; load current row count
 ;- (X,Y) = (r8,r7)  with a color stored in r6  
 
 ;---------------------------------------------------------------------
-draw_dot: 
+draw_dot:
 		   OUT   r8,VGA_LADD   ; write bot 8 address bits to register
            OUT   r7,VGA_HADD   ; write top 5 address bits to register
            OUT   r6,VGA_COLOR  ; write color data to frame buffer
@@ -128,6 +125,7 @@ draw_dot:
 ;- Subrountine: ISR
 ;---------------------------------------------------------------------
 ISR:
+	MOV		r6,0x00 
 	CALL	draw_dot                	; draw red square
 	RETIE      
 ; --------------------------------------------------------------------
