@@ -10,11 +10,13 @@ module RAT_WRAPPER(
     input BTNU, // INTERRUPT
     input [7:0] SWITCHES,
     output [7:0] LEDS,
+    output [2:0] HLED,   
     output [6:0] SEG,
     output [3:0] an,
     output [7:0] VGA_RGB,
     output VGA_HS,
-    output VGA_VS
+    output VGA_VS,
+    output PWM_H
     // seven seg display annodes can be added here
     );
     
@@ -32,6 +34,7 @@ module RAT_WRAPPER(
     localparam VGA_HADDR_ID = 8'h90;
     localparam VGA_LADDR_ID = 8'h91;
     localparam VGA_COLOR_ID = 8'h92;
+    localparam SERVO_H_ID   = 8'h49;
        
     // Signals for connecting RAT_MCU to RAT_wrapper /////////////////////////
     logic [7:0] s_output_port;
@@ -43,8 +46,10 @@ module RAT_WRAPPER(
     
     // Register definitions for output devices ///////////////////////////////
     logic [7:0]     s_input_port;
-    logic [7:0]     r_leds = 8'h00;
-    logic [3:0]     r_seg  = 4'h00;
+    logic [7:0]     r_leds    = 8'h00;
+    logic [3:0]     r_seg     = 4'h0;
+    logic [2:0]     r_servo_h = 0;
+    logic           r_pwm_h   = 0;
     
     // signals for connecting VGA frambuffer Driver
     logic r_vga_we;         // write enable
@@ -64,6 +69,15 @@ module RAT_WRAPPER(
         .BOUT(VGA_RGB[1:0]),
         .HS(VGA_HS),
         .VS(VGA_VS));
+    
+    // Declare Servo Horizontal Servo Controller
+    pwm_generator H_Servo(
+        .CLK(CLK),
+        .SCLK(s_clk_50),
+        .DIN(r_servo_h),
+        .LEDS(HLED),
+        .pwm(PWM_H) // output duty cycle signal
+        );
         
     // Declare RAT_CPU ///////////////////////////////////////////////////////
     MCU RAT_MCU(
@@ -109,12 +123,18 @@ module RAT_WRAPPER(
     // add additional if statements to read the Port id and see if if matches your new INPUT_ID
     // then assign r_input <= s_output_port
     always_ff @ (posedge CLK) begin
+        r_vga_we <= 0;
+        // r_servo_h <= 0;
+        
         if (s_load == 1'b1) begin
             if (s_port_id == LEDS_ID) begin
                 r_leds <= s_output_port;
             end
             else if (s_port_id == SEG_ID) begin
                 r_seg <= s_output_port;
+            end
+            else if (s_port_id == SERVO_H_ID) begin
+                r_servo_h <= s_output_port[2:0];
             end
             else if (s_port_id == VGA_HADDR_ID) begin   // Y coord
                 r_vga_wa[12:7] <= s_output_port[5:0];
@@ -131,7 +151,6 @@ module RAT_WRAPPER(
      
     // Connect Signals ///////////////////////////////////////////////////////
     assign s_reset = BTNC;
-    // assign s_interrupt = BTNU;  // no interrupt used yet
      
     // Output Assignments ////////////////////////////////////////////////////
     assign LEDS = r_leds;
