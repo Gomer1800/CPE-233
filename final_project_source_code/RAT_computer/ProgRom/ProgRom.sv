@@ -15,39 +15,23 @@ module ProgRom(
     
     // initialize the ROM with the prog_rom.mem file
     initial begin
-// VGA Test
-        $readmemh("draw2.mem", rom, 0, 1023); // (0 ,1023)            
-// Phase 1 Tests
-        // 1a
-        // $readmemh("1a_ANDrr_ORrr_EXORrr_LSL_LSR.mem", rom, 0, 1023); // (0 ,1023)
-        // 1b
-        // $readmemh("1b_ANDrr_ORrr_EXORrr_LSL_LSR.mem", rom, 0, 1023); // (0 ,1023)
-        // 1c
-        // $readmemh("1c_ANDrr_ORrr_EXORrr_LSL_LSR.mem", rom, 0, 1023); // (0 ,1023)
-        // 3a
-        // $readmemh("3ab_BRN_BREQ_BRNE_BRCS_BRCC_CLC_SEC.mem", rom, 0, 1023); // (0 ,1023)
-        // 6a
-        // $readmemh("6a_ADDri_ADDCri_SUBri_SUBCri.mem", rom, 0, 1023); // (0 ,1023)
-        // 7a
-        // $readmemh("7a_ADDrr_ADDCrr_SUBrr_SUBCrr.mem", rom, 0, 1023); // (0 ,1023)
-//Phase2 Tests
-        // 3B
-        // $readmemh("3B.mem", rom, 0, 1023); // (0 ,1023)
-        // 4A
-        // $readmemh("4a_WSP_PUSH_POP_CALL_RET.mem", rom, 0, 1023); // (0 ,1023)        
-        // 4B
-        // $readmemh("4b_WSP_PUSH_POP_CALL_RET.mem", rom, 0, 1023); // (0 ,1023)         
-        // 5A
-        // $readmemh("5A.mem", rom, 0, 1023); // (0 ,1023)
-        // 6B
-        // $readmemh("6B.mem", rom, 0, 1023); // (0 ,1023)
-        // Test All
-        // $readmemh("TestAll.mem", rom, 0, 1023); // (0 ,1023)
-//Phase3 Test        
-        // 8A
-        // $readmemh("Phase3_8A.mem", rom, 0, 1023); // (0 ,1023)
-        // 8 regular duration
-        // $readmemh("Phase3_interrupt.mem", rom, 0, 1023); // (0 ,1023)                        
+// IR TESTS
+        // $readmemh("test_IR.mem", rom, 0, 1023); // (0 ,1023)  
+        $readmemh("Final_inter_driven_pointer.mem", rom, 0, 1023); // (0 ,1023)   
+// Servo Tests
+        // $readmemh("test_h_zero.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("servotest.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("simple_horizontal.mem", rom, 0, 1023); // (0 ,1023)   
+// Scanner Tests
+        // $readmemh("scan.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("interrupt_test_A.mem", rom, 0, 1023); // (0 ,1023)       
+// VGA Tests
+        // $readmemh("draw2.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("Test_B_change_lines.mem", rom, 0, 1023); // (0 ,1023)                   
+        // $readmemh("Test_C_change_dot.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("Test_D_basic_inter.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("Test_Da_static_dot.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("Test_Db_dot_wDelay.mem", rom, 0, 1023); // (0 ,1023)                  
     end
     
     always_ff @ (posedge CLK) begin
