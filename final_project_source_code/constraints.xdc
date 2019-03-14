@@ -70,12 +70,12 @@ set_property PACKAGE_PIN V14 [get_ports {LEDS[7]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {led[11]}]
 #set_property PACKAGE_PIN P3 [get_ports {led[12]}]					
 	#set_property IOSTANDARD LVCMOS33 [get_ports {led[12]}]
-set_property PACKAGE_PIN N3 [get_ports {HLED[0]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {HLED[0]}]
-set_property PACKAGE_PIN P1 [get_ports {HLED[1]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {HLED[1]}]
-set_property PACKAGE_PIN L1 [get_ports {HLED[2]}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {HLED[2]}]
+#set_property PACKAGE_PIN N3 [get_ports {FSM_LED[0]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {FSM_LED[0]}]
+#set_property PACKAGE_PIN P1 [get_ports {FSM_LED[1]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {FSM_LED[1]}]
+#set_property PACKAGE_PIN L1 [get_ports {FSM_LED[2]}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {FSM_LED[2]}]
 	
 	
 ##7 segment display
@@ -112,25 +112,25 @@ set_property PACKAGE_PIN U18 [get_ports BTNC]
 	set_property IOSTANDARD LVCMOS33 [get_ports BTNC]
 set_property PACKAGE_PIN T18 [get_ports BTNU]						
 	set_property IOSTANDARD LVCMOS33 [get_ports BTNU]
-#set_property PACKAGE_PIN W19 [get_ports btnL]						
-	#set_property IOSTANDARD LVCMOS33 [get_ports btnL]
-#set_property PACKAGE_PIN T17 [get_ports btnR]						
-	#set_property IOSTANDARD LVCMOS33 [get_ports btnR]
-#set_property PACKAGE_PIN U17 [get_ports reset]						
-	#set_property IOSTANDARD LVCMOS33 [get_ports reset]
+set_property PACKAGE_PIN W19 [get_ports BTNL]						
+	set_property IOSTANDARD LVCMOS33 [get_ports BTNL]
+set_property PACKAGE_PIN T17 [get_ports BTNR]						
+	set_property IOSTANDARD LVCMOS33 [get_ports BTNR]
+set_property PACKAGE_PIN U17 [get_ports BTND]						
+	set_property IOSTANDARD LVCMOS33 [get_ports BTND]
  
 
 
 ##Pmod Header JA
 ##Sch name = JA1
-#set_property PACKAGE_PIN J1 [get_ports {PWM_H}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {PWM_H}]
+set_property PACKAGE_PIN J1 [get_ports {PWM_V}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWM_V}]
 ##Sch name = JA2
 set_property PACKAGE_PIN L2 [get_ports {PWM_H}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {PWM_H}]
 ##Sch name = JA3
-#set_property PACKAGE_PIN J2 [get_ports {JA[2]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[2]}]
+set_property PACKAGE_PIN J2 [get_ports {PWM_FSM}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {PWM_FSM}]
 ##Sch name = JA4
 #set_property PACKAGE_PIN G2 [get_ports {JA[3]}]					
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[3]}]
@@ -151,29 +151,29 @@ set_property PACKAGE_PIN L2 [get_ports {PWM_H}]
 
 ##Pmod Header JB
 ##Sch name = JB1
-#set_property PACKAGE_PIN A14 [get_ports {JB[0]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[0]}]
+set_property PACKAGE_PIN A14 [get_ports {IRSENSOR[0]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[0]}]
 ##Sch name = JB2
-#set_property PACKAGE_PIN A16 [get_ports {JB[1]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[1]}]
+set_property PACKAGE_PIN A16 [get_ports {IRSENSOR[1]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[1]}]
 ##Sch name = JB3
-#set_property PACKAGE_PIN B15 [get_ports {JB[2]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[2]}]
+set_property PACKAGE_PIN B15 [get_ports {IRSENSOR[2]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[2]}]
 ##Sch name = JB4
-#set_property PACKAGE_PIN B16 [get_ports {JB[3]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[3]}]
+set_property PACKAGE_PIN B16 [get_ports {IRSENSOR[3]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[3]}]
 ##Sch name = JB7
-#set_property PACKAGE_PIN A15 [get_ports {JB[4]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[4]}]
+set_property PACKAGE_PIN A15 [get_ports {IRSENSOR[4]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[4]}]
 ##Sch name = JB8
-#set_property PACKAGE_PIN A17 [get_ports {JB[5]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[5]}]
+set_property PACKAGE_PIN A17 [get_ports {IRSENSOR[5]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[5]}]
 ##Sch name = JB9
-#set_property PACKAGE_PIN C15 [get_ports {JB[6]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[6]}]
+set_property PACKAGE_PIN C15 [get_ports {IRSENSOR[6]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[6]}]
 ##Sch name = JB10 
-#set_property PACKAGE_PIN C16 [get_ports {JB[7]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JB[7]}]
+set_property PACKAGE_PIN C16 [get_ports {IRSENSOR[7]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {IRSENSOR[7]}]
  
 
 
