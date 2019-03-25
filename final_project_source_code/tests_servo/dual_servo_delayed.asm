@@ -4,7 +4,7 @@
 .EQU SEG_PORT   = 0x81
 .EQU IN_PORT = 0x9A
 .EQU OUT_PORT = 0x42
-.EQU COUNT = 0xFF;0xFF
+.EQU COUNT = 0xFF	;0xFF
 .EQU COUNT_3 = 0x5E	; 94
 .EQU COUNT_5 = 0x9A	; 154
 .EQU COUNT_6 = 0x4B	; 74
@@ -12,37 +12,39 @@
 .CSEG
 .ORG 0x01
 
-start:	MOV R6,0x00
+		MOV R6,0x00
 		OUT R6, LED_PORT
-		MOV R5,0x01		; horizontal servo command
-		MOV R4,0x00
-		MOV R3,0x01		; vertical servo command
-		MOV R2,0x00
-main:	CMP R2,0x28
+		MOV R5,0x04		; Reset CCW
+		MOV R9,0x00
+		MOV R8,0x01		; Move CW
+		MOV R7,0x00
+main:	
+		CMP R7,0x0A		; 0x28 40 times
 		BREQ end
-R:		OUT R4, SEG_PORT
-		CMP R4,0x50		; 80 times
+R:		
+		OUT R9,SEG_PORT
+		CMP R9,0x0A		; 0x50 80 times
 		BREQ L
-		ADD R4,0x01
-		OUT R5,SERVO_PORT_H
+		ADD R9,0x01
+		OUT R8,SERVO_PORT_H
 		CALL DELAY	
 		BRN R
-L:		OUT R4, SEG_PORT		
-		CMP R4,0x00
-		BREQ D
-		MOV R5,0x04
-		SUB R4,0x01
+L:
+		OUT R9,SEG_PORT	
 		OUT R5,SERVO_PORT_H
-		CALL DELAY		
-		BRN L
-D:		ADD R2,0x01
-		OUT R3, SERVO_PORT_V
+		CALL DELAY
+		BRN D
+D:		
+		ADD R7,0x01
+		OUT R8,SERVO_PORT_V
 		CALL DELAY		
 		BRN main
-end:	MOV R6,0x01
+end:	
+		MOV R6,0x01
 		OUT R6,LED_PORT
 FINAL:	BRN FINAL
 
+; Uses R1, R2, R3
 DELAY:
 		MOV R1, COUNT
 loop1:	MOV R2, COUNT

@@ -6,21 +6,22 @@
 
 module RAT_WRAPPER(
     input CLK,
-    input BTNC, // System RESET
-    input BTNU, // Vert Servo Reset
+    input BTNC,             // System RESET
+    input BTNU,             // Vert Servo Reset
     input BTND,
-    input BTNL, // Horiz Servo Reset
+    input BTNL,             // Horiz Servo Reset
     input BTNR,
     input [7:0] IRSENSOR,   // IR feedback
     input [7:0] SWITCHES,
     output [7:0] LEDS,
-    //output [2:0] FSM_LED,   
+    output [2:0] FSM_LED,   
     output [6:0] SEG,
     output [3:0] an,
     output [7:0] VGA_RGB,
     output VGA_HS,
     output VGA_VS,
-    output PWM_H, PWM_V//, PWM_FSM
+    output PWM_V, PWM_H,
+    output PWM_FSM
     // seven seg display annodes can be added here
     );
     
@@ -30,7 +31,7 @@ module RAT_WRAPPER(
     // to add constants here for the mux below
     localparam SWITCHES_ID = 8'h20;
     localparam VGA_READ_ID = 8'h93;
-    localparam IRSENSOR_ID = 8'hA6;
+    localparam IRSENSOR_ID = 8'hA6;     // Infrared Sensor
            
     // OUTPUT PORT IDS ///////////////////////////////////////////////////////
     // In future labs you can add more port IDs
@@ -39,7 +40,7 @@ module RAT_WRAPPER(
     localparam VGA_HADDR_ID = 8'h90;
     localparam VGA_LADDR_ID = 8'h91;
     localparam VGA_COLOR_ID = 8'h92;
-    localparam SERVO_H_ID   = 8'h49;
+    localparam SERVO_H_ID   = 8'h49;    // Servo FSM port
        
     // Signals for connecting RAT_MCU to RAT_wrapper /////////////////////////
     logic [7:0] s_output_port;
@@ -53,9 +54,7 @@ module RAT_WRAPPER(
     logic [7:0]     s_input_port;
     logic [7:0]     r_leds    = 8'h00;
     logic [3:0]     r_seg     = 4'h0;
-    logic [2:0]     r_servo_h = 0;
-    // logic           r_pwm_h   = 0;
-    // logic           r_pwm_en  = 0;
+    logic [2:0]     r_servo_h = 3'b000;
     
     // signals for connecting VGA frambuffer Driver
     logic r_vga_we;         // write enable
@@ -76,8 +75,8 @@ module RAT_WRAPPER(
         .HS(VGA_HS),
         .VS(VGA_VS));
     
-    // Declare Servo Fsm
-    /*pwm_generator servo_fsm(
+    // Declare Servo Fsm//////////////////////////////////////////////////////
+    pwm_generator servo_fsm(
         .CLK(CLK),
         .SCLK(s_clk_50),
         .RESET(s_reset),
@@ -85,22 +84,21 @@ module RAT_WRAPPER(
         .LEDS(FSM_LED),
         .pwm(PWM_FSM) // output duty cycle signal
         );
-      */  
-    // Declare Servo Button Controls
-    logic H_BL, H_BR, V_BU, V_BD;
-    assign s_interrupt = H_BR | V_BD;        
+          
+    // Declare Servos w/ Button Control///////////////////////////////////////
+    logic H_BL, H_BR, V_BU, V_BD;      
     
-    debounce_one_shot pwm_L(
+    debounce_one_shot pwm_L( // Reset CCW
             s_clk_50,
             BTNL,
             H_BL);
 
-    debounce_one_shot pwm_R(
+    debounce_one_shot pwm_R( // Increment CW
             s_clk_50,
             BTNR,
             H_BR);
                     
-    pwm_gen_btn H_servo(
+    pwm_gen_btn H_servo(     // Horizontal servo
         .CLK(CLK),
         .SCLK(s_clk_50),
         .BC(s_reset),
@@ -108,17 +106,17 @@ module RAT_WRAPPER(
         .BR(H_BR),
         .pwm(PWM_H));
         
-    debounce_one_shot pwm_U(
+    debounce_one_shot pwm_U( // Reset CCW
         s_clk_50,
         BTNU,
         V_BU);
     
-    debounce_one_shot pwm_D(
+    debounce_one_shot pwm_D( // Reset CW
         s_clk_50,
         BTND,
         V_BD);
     
-    pwm_gen_btn V_servo(
+    pwm_gen_btn V_servo(    // Vertical Servo
         .CLK(CLK),
         .SCLK(s_clk_50),
         .BC(s_reset),
@@ -141,13 +139,6 @@ module RAT_WRAPPER(
         r_seg,
         SEG,
         an);
-        
-    // INTERRUPT
-    // assign s_interrupt = H_BR ;//| H_BL;   
-    /*debounce_one_shot RAT_interrupt(
-        s_clk_50,
-        r_interrupt,
-        s_interrupt);*/
 
     // Declare Debouncer    
     debounce_one_shot RAT_reset(
@@ -180,7 +171,7 @@ module RAT_WRAPPER(
     // then assign r_input <= s_output_port
     always_ff @ (posedge CLK) begin
         r_vga_we <= 0;
-        //r_pwm_en <= 0;
+        r_servo_h <= 0;
         
         if (s_load == 1'b1) begin
             if (s_port_id == LEDS_ID) begin
@@ -189,10 +180,9 @@ module RAT_WRAPPER(
             else if (s_port_id == SEG_ID) begin
                 r_seg <= s_output_port;
             end
-            /*else if (s_port_id == SERVO_H_ID) begin
+            else if (s_port_id == SERVO_H_ID) begin
                 r_servo_h <= s_output_port[2:0];
-                //r_pwm_en <= 1'b1;
-            end*/
+            end
             else if (s_port_id == VGA_HADDR_ID) begin   // Y coord
                 r_vga_wa[12:7] <= s_output_port[5:0];
             end
@@ -207,8 +197,7 @@ module RAT_WRAPPER(
     end
      
     // Connect Signals ///////////////////////////////////////////////////////
-     
+    assign s_interrupt = H_BR | V_BD; // Servo Interrupt
     // Output Assignments ////////////////////////////////////////////////////
     assign LEDS = r_leds;
-    
     endmodule
