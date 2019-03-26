@@ -17,11 +17,13 @@ module ProgRom(
     initial begin
 // IR TESTS
         // $readmemh("test_IR.mem", rom, 0, 1023); // (0 ,1023)  
-        $readmemh("Final_inter_driven_pointer.mem", rom, 0, 1023); // (0 ,1023)   
+        // $readmemh("Final_inter_driven_pointer.mem", rom, 0, 1023); // (0 ,1023)   
 // Servo Tests
         // $readmemh("test_h_zero.mem", rom, 0, 1023); // (0 ,1023)
         // $readmemh("servotest.mem", rom, 0, 1023); // (0 ,1023)
-        // $readmemh("simple_horizontal.mem", rom, 0, 1023); // (0 ,1023)   
+        // $readmemh("simple_horizontal.mem", rom, 0, 1023); // (0 ,1023)
+        // $readmemh("dual_servo_delayed.mem", rom, 0, 1023); // (0 ,1023)
+        $readmemh("dual_servo_isr.mem", rom, 0, 1023); // (0 ,1023)                   
 // Scanner Tests
         // $readmemh("scan.mem", rom, 0, 1023); // (0 ,1023)
         // $readmemh("interrupt_test_A.mem", rom, 0, 1023); // (0 ,1023)       

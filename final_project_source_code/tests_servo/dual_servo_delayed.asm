@@ -15,9 +15,9 @@
 		MOV R6,0x00
 		OUT R6, LED_PORT
 		MOV R5,0x04		; Reset CCW
-		MOV R9,0x00
+		MOV R9,0x00		; H counter
 		MOV R8,0x01		; Move CW
-		MOV R7,0x00
+		MOV R7,0x00		; V counter
 main:	
 		CMP R7,0x0A		; 0x28 40 times
 		BREQ end
@@ -30,10 +30,10 @@ R:
 		CALL DELAY	
 		BRN R
 L:
-		OUT R9,SEG_PORT	
+		OUT R9,SEG_PORT
+		MOV R9,0x00	
 		OUT R5,SERVO_PORT_H
 		CALL DELAY
-		BRN D
 D:		
 		ADD R7,0x01
 		OUT R8,SERVO_PORT_V

@@ -11,16 +11,18 @@ module pwm_generator (
     input SCLK,
     input RESET,            // System Reset
     input [2:0] DIN,        // Control Signals
+    output logic INTER = 0,     // interrupt signal
     output logic [2:0] LEDS,// Control Indicator Lights
     output logic pwm = 0    // output duty cycle signal
     );
 
     localparam maxcount = 20'hFFFFF;    // numerical rep of half wave length, a
-    localparam L = 20'h0A710; // 20'h1D9A2;           // ~30 angular position
+    localparam L = 20'h0DDD3; // 20'h1D9A2;           // ~30 angular position
     localparam N = 20'h11496; // 20'h122D2;           // ~90 pos
     localparam R = 20'h14B59; // 20'h06C02;           // ~120 angular position
-    localparam DELTA = 20'h0020E;                     // (R-L)/80 horizontal delta
-
+    localparam DELTA = 20'h0015F;                     // (R-L)/80 horizontal delta
+    
+    logic pwm_inter = 0;
     logic [20:0] count = 0;
     logic [19:0] select = L;
     logic [19:0] pwm_select = L;
@@ -45,13 +47,20 @@ module pwm_generator (
     always_ff @ (posedge SCLK)
     begin
         if (ENABLE == 1)
+        begin
             pwm_select <= select;
+            INTER <= pwm_inter;
+        end
         else
+        begin
             pwm_select <= pwm_select;
+            INTER <= 0;
+        end
     end
     
     always_ff @ (posedge SCLK) // evaluate states
     begin
+        pwm_inter <= 0;
         ENABLE <= 0;
         case(PS)
             START: 
@@ -91,6 +100,7 @@ module pwm_generator (
             RIGHT:
             begin
                 ENABLE <= 1;
+                pwm_inter <= 1;                
                 if(select < R)
                     select <= select + DELTA;
                 else select <= R;
