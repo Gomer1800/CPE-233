@@ -1,16 +1,12 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////
 // Created by Paul Hummel
-// Modified by Luis Gomez
+// Modified by Luis Gomez for the Depth Map Scanner
 //////////////////////////////////////////////////////////////////////////////
 
 module RAT_WRAPPER(
     input CLK,
     input BTNC,             // System RESET
-    //input BTNU,             // Vert Servo Reset
-    //input BTND,
-    //input BTNL,             // Horiz Servo Reset
-    //input BTNR,
     input [7:0] IRSENSOR,   // IR feedback
     input [7:0] SWITCHES,
     output [7:0] LEDS,
@@ -21,7 +17,6 @@ module RAT_WRAPPER(
     output [7:0] VGA_RGB,
     output VGA_HS,
     output VGA_VS,
-    // output PWM_V, PWM_H,
     output PWM_FSM_H,
     output PWM_FSM_V
     // seven seg display annodes can be added here
@@ -100,48 +95,7 @@ module RAT_WRAPPER(
         .LEDS(FSM_LED_V),
         .pwm(PWM_FSM_V) // output duty cycle signal
         );
-                  
-    // Declare Servos w/ Button Control///////////////////////////////////////
-    /*
-    logic H_BL, H_BR, V_BU, V_BD;      
-    
-    debounce_one_shot pwm_L( // Reset CCW
-            s_clk_50,
-            BTNL,
-            H_BL);
-
-    debounce_one_shot pwm_R( // Increment CW
-            s_clk_50,
-            BTNR,
-            H_BR);
-                    
-    pwm_gen_btn H_servo(     // Horizontal servo
-        .CLK(CLK),
-        .SCLK(s_clk_50),
-        .BC(s_reset),
-        .BL(H_BL),
-        .BR(H_BR),
-        .pwm(PWM_H));
-        
-    debounce_one_shot pwm_U( // Reset CCW
-        s_clk_50,
-        BTNU,
-        V_BU);
-    
-    debounce_one_shot pwm_D( // Reset CW
-        s_clk_50,
-        BTND,
-        V_BD);
-    
-    pwm_gen_btn V_servo(    // Vertical Servo
-        .CLK(CLK),
-        .SCLK(s_clk_50),
-        .BC(s_reset),
-        .BL(V_BU),
-        .BR(V_BD),
-        .pwm(PWM_V));
-    */
-                
+                                  
     // Declare RAT_CPU ///////////////////////////////////////////////////////
     MCU RAT_MCU(
         .CLK(s_clk_50),

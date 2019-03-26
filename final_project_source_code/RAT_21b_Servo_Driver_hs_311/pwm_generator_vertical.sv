@@ -78,9 +78,6 @@ module pwm_generator_vertical (
             LEFT:
             begin
                 ENABLE <= 1;
-                /*if(select > L)
-                    select <= select - DELTA;
-                else select <= L;*/
                 select <= L;
                 LEDS <= 3'b100;
                 NS <= IDLE;
