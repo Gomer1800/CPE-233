@@ -15,12 +15,13 @@ module pwm_generator (
     output logic [2:0] LEDS,// Control Indicator Lights
     output logic pwm = 0    // output duty cycle signal
     );
-
+    // LocalParams calculated using my derive equation for select = (Fclock * Tdesired)/2
+    // Select determines how long the PWM counter must increment before toggling the square wave
     localparam maxcount = 20'hFFFFF;    // numerical rep of half wave length, a
-    localparam L = 20'h0DDD3; // 20'h1D9A2;           // ~75 angular position
-    localparam N = 20'h11496; // 20'h122D2;           // ~90 pos
-    localparam R = 20'h14B59; // 20'h06C02;           // ~105 angular position
-    localparam DELTA = 20'h0015F;                     // (R-L)/40 vertical delta
+    localparam L = 20'h0DDD3;           // ~60 angular position
+    localparam N = 20'h11496;           // ~90 pos
+    localparam R = 20'h14B59;           // ~120 angular position
+    localparam DELTA = 20'h0015F;       // (R-L)/80 horizontal delta
     
     logic pwm_inter = 0;
     logic [20:0] count = 0;
@@ -108,7 +109,8 @@ module pwm_generator (
         endcase // PS case    
     end // evaluate states
     
-    //////////////////////////////////////////GOOD   
+    ////////////////////////////////////////////////////////
+    // PWM Generator Counter
     always_ff @ (posedge CLK)
     begin
         if (pwm_select == 0)        // 0% duty cycle
