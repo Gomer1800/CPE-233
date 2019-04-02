@@ -13,6 +13,7 @@
 .EQU BG_COLOR = 0xFF             ; Background:  white
 .EQU BG_COLOR_2 = 0x00           ; Background:  black
 
+.EQU COUNT_SHORT = 0xF0 ; 128
 .EQU COUNT = 0xFF	; 255
 .EQU COUNT_3 = 0x5E	; 94
 .EQU COUNT_5 = 0x9A	; 154
@@ -33,21 +34,22 @@
 ;---------------------------------------------------------------------
 ; Initial declarations
 reset:
+		MOV 	R4, 0x00	
+		MOV		R5, 0x00
 		MOV		R6,BG_COLOR
 		CALL 	draw_background
-		CALL	delay		
-		MOV		R11,0x00
-		MOV		R12,0x01
-		MOV		R13,0x00
-		MOV		R14,0x04
+		CALL 	draw_background
+		CALL	delay
+		MOV		R11,0x00	; Servo Vert Counter
+		MOV		R12,0x01	; Servo R command
+		MOV		R13,0x00	; Servo Horiz Counter
+		MOV		R14,0x04	; Servo L command
 		MOV		R15,0x00
 		OUT		R15,LED_PORT
-		MOV 	R7, 0x00	
-		MOV		R8, 0x00
-		
+
 		SEI
 scan:
-		CMP		R11,0x28
+		CMP		R11,0x3C
 		BREQ	end
 R:
 		OUT		R13,SEG_PORT
@@ -71,7 +73,7 @@ D:
 		BRN		scan		
 end:
 		OUT		R15,LED_PORT
-		BRN		reset
+		BRN		end
 
 ;--------------------------------------------------------------------
 ;-  Subroutine: draw_horizontal_line
@@ -109,7 +111,7 @@ draw_background:
 		MOV		R10,0x00			;R10 keeps track of rows
 start:	MOV		R7,R10              ;load current row count 
 		MOV		R8,0x00             ;restart x coordinates
-		MOV		9,0x4F 				;set to total number of columns
+		MOV		R9,0x4F 			;set to total number of columns
 
 		CALL	draw_horizontal_line
 		ADD		R10,0x01            ;increment row count
@@ -161,30 +163,57 @@ loop5:	SUB R1, 1		; count5--
 loop6:	SUB R0, 1		; count6--
 		BRNE loop6
 		RET
-		
+;---------------------------------------------------------------------
+;- Subrountine: delay short
+;- 
+;- This subroutine generates a <1 second delay: 
+;- 
+;- Tweaked Registers, R0, R1, R2 
+
+;---------------------------------------------------------------------
+delay_short:
+		MOV R0, COUNT_SHORT
+loop_1:	MOV R1, COUNT
+loop_2:	MOV R2, COUNT_3
+loop_3:	SUB R2, 1		; count3--
+		BRNE loop_3
+		SUB R1, 1		; count2--
+		BRNE loop_2
+		SUB R0, 1		; count1--
+		BRNE loop_1
+		MOV R0, COUNT
+loop_4:	MOV R1, COUNT_5
+loop_5:	SUB R1, 1		; count5--
+		BRNE loop_5
+		SUB R0, 1		; count4--
+		BRNE loop_4
+		MOV R0, COUNT_6
+loop_6:	SUB R0, 1		; count6--
+		BRNE loop_6
+		RET
 ; --------------------------------------------------------------------
 ;- Interupt service routine
 ;-
 ;- Paints a pixel in the VGA when an interrupt is triggered according to
 ;- the 8 - bit value digital input from the sensor
 ;-
-;- R4 - input port from the sensor
+;- R3 - input port from the sensor
 ; --------------------------------------------------------------------
-ISR: 	IN 		R4,IR_SENSOR_ID
-		MOV		R6,R4          	    ;color from sensor
-output:	OUT		R8,VGA_LADD  		;write bot 8 address bits to register
-		OUT		R7,VGA_HADD   		;write top 5 address bits to register
+ISR: 	IN 		R3,IR_SENSOR_ID
+		MOV		R6,R3          	    ;color from sensor
+output:	OUT		R4,VGA_LADD  		;write bot 8 address bits to register
+		OUT		R5,VGA_HADD   		;write top 5 address bits to register
 		OUT		R6,VGA_COLOR  		;write color data to frame buffer
 
-incr:	ADD R8, 0x01
-		CMP R8, 0x50
+incr:	ADD R4, 0x01
+		CMP R4, 0x50
 		BRNE return 				;if equal to 0 go to next row
 		CLC
-		ADD R7, 0x01
-		MOV R8, 0x00
-		CMP	R7,0x3C
+		ADD R5, 0x01
+		MOV R4, 0x00
+		CMP	R5,0x3C
 		BRNE return		
-		MOV R7, 0x00
+		MOV R5, 0x00
 		CLC
 return:	RETIE
 
